@@ -42,7 +42,7 @@ from ansys.aedt.core.modeler.cad.object_3d import Object3d
 from ansys.aedt.core.modeler.cad.polylines import Polyline
 
 import portalocker
-import fcntl
+# import fcntl
 import copy
 
 # geometry parameter class
@@ -1176,6 +1176,69 @@ sim = Sim()
 class NoSim(Sim):
     def __init__(self):
         super().__init__()
+    def simulation(self, no_analyze:bool = True) :
+        self.start_time = time.time()
+        file_path = "simulation_num.txt"
+
+        if not os.path.exists(file_path):
+            with open(file_path, "w", encoding="utf-8") as f:
+                f.write("1")
+
+        # 읽기/쓰기 모드로 열고 배타 잠금
+        with open(file_path, "r+", encoding="utf-8") as file:
+            fd = file.fileno()
+            # 첫 1바이트를 블로킹 모드로 잠금
+            msvcrt.locking(fd, msvcrt.LK_LOCK, 1)
+
+            # 현재 값 읽기
+            raw = file.read().strip()
+            content = int(raw) if raw else 0
+
+            # 인스턴스 변수에 반영
+            self.num = content
+            self.PROJECT_NAME = f"simulation{content}"
+
+            # 값 증가
+            content += 1
+
+            # 파일 갱신
+            file.seek(0)
+            file.truncate()
+            file.write(str(content))
+            file.flush()
+
+            # 잠금 해제
+            file.seek(0)
+            msvcrt.locking(fd, msvcrt.LK_UNLCK, 1)
+
+        log_simulation(number=self.num, pid=self.desktop.aedt_process_id)
+
+
+        self.create_project()
+        self.get_random_variable()
+        self.set_variable()
+        self.set_analysis()
+        self.set_material()
+
+
+        self.create_core()
+        self.create_winding()
+        self.assign_mesh()
+        self.create_region()
+
+        self.create_exctation()
+
+        if no_analyze == False:
+            self.M3D.analyze()
+
+            self._get_magnetic_report()
+            self.get_input_parameter()
+            self._get_copper_loss_parameter()
+
+            self.coreloss_project()
+            self.write_data()
+
+
 
     def simulation(self, no_analyze:bool = True):
         self.start_time = time.time()
