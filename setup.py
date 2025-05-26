@@ -16,7 +16,7 @@ setuptools.setup(
     long_description_content_type="text/markdown",    # README.md 포맷
     url="https://github.com/Glaysia/peetsModules",    # 프로젝트 URL
     packages=setuptools.find_packages("peetsModules"),              # 모든 서브패키지를 자동으로 포함
-    package_dir={"":"peetsModules"}
+    package_dir={"":"peetsModules"},
     python_requires=">=3.10",                          # 지원하는 Python 버전
     install_requires=[                                # pip install 시 자동으로 설치할 의존 패키지
         # 예시:
