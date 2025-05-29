@@ -1171,7 +1171,7 @@ def save_error_log(project_name, error_info):
         f.write(error_info)
 
 
-sim = Sim()
+# sim = Sim()
 
 class NoSim(Sim):
     def __init__(self):
@@ -1331,4 +1331,33 @@ class peetsModules:
     def openAedt():
         sim = NoSim()
         sim.simulation(True)
+# %%
+if __name__=='__main__':
+    from nsgaTest import CoilParams, executeModel
 
+    print(model_result:=executeModel(CoilParams(10.1,3,(10,20,5),14,6.78e9,(220,0.45),(24,4))))
+
+    import pandas as pd
+    import matplotlib.pyplot as plt
+    model_result = pd.read_csv(model_result)
+    
+    plt.rcParams["figure.figsize"] = (8,7)
+
+    parameters = {'xtick.labelsize' : 20,
+            'ytick.labelsize' : 20}
+    plt.rcParams.update(parameters)
+
+    plt.scatter((model_result["A"]), model_result["total_loss"] ,s=60)
+
+
+
+    #plt.scatter(data3["Ac"], data3["eff"] ,s=60)
+
+    plt.xlabel("A[mm$^2$]", fontsize=20)
+    #plt.xlim([0, 5000])
+    #plt.ylim([98.0, 99.8])
+    plt.ylabel("loss[W]", fontsize=20)
+    plt.grid(True)
+
+    plt.show()
+# %%
