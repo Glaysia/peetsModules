@@ -585,15 +585,20 @@ from typing import Tuple
 from pathlib import Path
 
 @dataclass
+class DimensionRange:
+    width: Tuple[float, float]
+    depth: Tuple[float, float]
+    height: Tuple[float, float]
+
+@dataclass
 class CoilParams:
     Lm: float
     Lk: float
-    size: Tuple[float, float, float]
-    turn_ratio: float
+    size: DimensionRange
     freq: float
     iv_in: Tuple[float, float]
     iv_out: Tuple[float, float]
 
 def executeModel(params: CoilParams)->Path:
     print(params)
-    return Path("tmp.csv").absolute()
+    return Path("result1_v2_68uH.csv").absolute()
